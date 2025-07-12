@@ -1,0 +1,72 @@
+package br.com.raroacademy.projetofinal.controller.equipamento;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import br.com.raroacademy.projetofinal.dto.equipamento.TipoEquipamentoRequisicaoDTO;
+import br.com.raroacademy.projetofinal.dto.equipamento.TipoEquipamentoRespostaDTO;
+import br.com.raroacademy.projetofinal.dto.estoque.AtualizarEstoqueMinimoDTO;
+import br.com.raroacademy.projetofinal.service.equipamento.TipoEquipamentoService;
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("/tipos-equipamentos")
+public class TipoEquipamentoController {
+
+	@Autowired
+    private TipoEquipamentoService tipoEquipamentoService;
+	
+	@GetMapping("/{id}")
+    public ResponseEntity<TipoEquipamentoRespostaDTO> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(tipoEquipamentoService.buscarPorId(id));
+    }
+	
+	@GetMapping
+    public ResponseEntity<Page<TipoEquipamentoRespostaDTO>> listarPaginado(
+        @RequestParam(defaultValue = "0") int pagina,
+        @RequestParam(defaultValue = "10") int tamanho
+		) 
+	{
+        Pageable paginacao = PageRequest.of(pagina, tamanho);
+        Page<TipoEquipamentoRespostaDTO> paginaResultado = tipoEquipamentoService.listarTodos(paginacao);
+        return ResponseEntity.ok(paginaResultado);
+    }
+
+    @PostMapping
+    public ResponseEntity<String> cadastrar(@Valid @RequestBody TipoEquipamentoRequisicaoDTO dto) {
+        tipoEquipamentoService.criar(dto);
+        return ResponseEntity.ok("Tipo de Equipamento cadastrado com sucesso!");
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<String> atualizar(@PathVariable Long id, @Valid @RequestBody TipoEquipamentoRequisicaoDTO dto) {
+        tipoEquipamentoService.atualizar(id, dto);
+        return ResponseEntity.ok("Tipo de Equipamento atualizado com sucesso!");
+    }
+    
+    @PatchMapping("/{id}/estoque-minimo")
+    public ResponseEntity<String> atualizarEstoqueMinimo(@PathVariable Long id, @RequestBody @Valid AtualizarEstoqueMinimoDTO dto) {
+        tipoEquipamentoService.atualizarEstoqueMinimo(id, dto);
+        return ResponseEntity.ok("Estoque mínimo atualizado com sucesso!");
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletar(@PathVariable Long id) {
+        tipoEquipamentoService.deletar(id);
+        return ResponseEntity.ok("Tipo de Equipamento excluído com sucesso!");
+    }
+    
+}

@@ -1,0 +1,1 @@
+ALTER TABLE tipos_equipamentos ADD COLUMN estoque_minimo INTEGER;
