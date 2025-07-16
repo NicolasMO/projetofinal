@@ -37,42 +37,53 @@ public class UsuarioServico {
     }
 
     public Usuario criarDTO(UsuarioRequisicaoDTO dto) {
+
         if (usuarioRepositorio.findByEmail(dto.email()).isPresent()) {
             throw new EmailJaCadastradoException("Já existe um usuário com este e-mail.");
         }
 
-        Usuario usuario = new Usuario();
-        usuario.setNome(dto.nome());
-        usuario.setEmail(dto.email().toLowerCase());
-        usuario.setSenha(codificador.encode(dto.senha()));
-        usuario.setAtivo(false);
+        Usuario usuario = new Usuario().getUserModel(dto);
 
         usuarioRepositorio.save(usuario);
 
+        TokenUsuario token = setTokenUser(usuario);
+
+        new Thread(() -> {
+            SendMessageToUser(token, usuario.getEmail(), usuario.getNome());
+        }).start();
+
+        return usuario;
+    }
+
+    private TokenUsuario setTokenUser(Usuario usuario) {
         TokenUsuario token = new TokenUsuario(
                 UUID.randomUUID().toString(),
                 LocalDateTime.now().plusHours(2),
                 TipoToken.CONFIRMACAO_CADASTRO,
                 usuario
         );
+
         tokenUsuarioRepository.save(token);
 
+
+        return token;
+    }
+
+    private void SendMessageToUser(TokenUsuario token, String email, String nome) {
         String link = "http://localhost:8080/usuarios/confirmar?token=" + token.getToken();
         String corpo = String.format("""
-            <html>
-            <body>
-                <h2>Confirmação de Cadastro</h2>
-                <p>Olá, %s!</p>
-                <p>Confirme seu cadastro clicando no link abaixo:</p>
-                <p><a href="%s">Confirmar Cadastro</a></p>
-                <p><em>Este link expira em 2 horas.</em></p>
-            </body>
-            </html>
-        """, usuario.getNome(), link);
+                    <html>
+                    <body>
+                        <h2>Confirmação de Cadastro</h2>
+                        <p>Olá, %s!</p>
+                        <p>Confirme seu cadastro clicando no link abaixo:</p>
+                        <p><a href="%s">Confirmar Cadastro</a></p>
+                        <p><em>Este link expira em 2 horas.</em></p>
+                    </body>
+                    </html>
+                """, nome, link);
 
-        emailServico.enviarEmail(usuario.getEmail(), "Ative sua conta", corpo);
-
-        return usuario;
+        emailServico.enviarEmail(email, "Ative sua conta", corpo);
     }
 
     public void confirmarCadastro(String token) {

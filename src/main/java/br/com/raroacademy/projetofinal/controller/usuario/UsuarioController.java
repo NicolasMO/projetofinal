@@ -1,32 +1,39 @@
 package br.com.raroacademy.projetofinal.controller.usuario;
 
+import br.com.raroacademy.projetofinal.controller.BaseController;
+import br.com.raroacademy.projetofinal.dispachers.CommandBus;
 import br.com.raroacademy.projetofinal.dto.usuario.*;
+import br.com.raroacademy.projetofinal.model.ResponseModel;
 import br.com.raroacademy.projetofinal.model.usuario.Usuario;
+import br.com.raroacademy.projetofinal.service.usuario.CreateUser.CreateUserCommand;
 import br.com.raroacademy.projetofinal.service.usuario.UsuarioServico;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/usuarios")
-public class UsuarioController {
-
+public class UsuarioController extends BaseController {
     private final UsuarioServico usuarioServico;
 
     @Autowired
-    public UsuarioController(UsuarioServico usuarioServico) {
+    public UsuarioController(
+            UsuarioServico usuarioServico,
+            CommandBus commandBus,
+            HttpServletResponse httpServletResponse
+    ) {
+        super(commandBus, httpServletResponse);
         this.usuarioServico = usuarioServico;
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioRespostaDTO> criar(@Valid @RequestBody UsuarioRequisicaoDTO dto) {
-        Usuario novoUsuario = usuarioServico.criarDTO(dto);
-        UsuarioRespostaDTO resposta = new UsuarioRespostaDTO(novoUsuario);
-        return ResponseEntity.created(URI.create("/usuarios/" + novoUsuario.getId())).body(resposta);
+    public ResponseModel CreateUserCommand(@Valid @RequestBody CreateUserCommand command) {
+        return ExecuteController(command, HttpStatus.CREATED.value(), HttpStatus.BAD_REQUEST.value());
     }
 
     @GetMapping("/confirmar")

@@ -9,7 +9,6 @@ public record UsuarioRequisicaoDTO(
         @Email(message = "Formato de e-mail inválido")
         @NotBlank(message = "E-mail não pode ficar em branco")
         String email,
-
         @SenhaForte
         String senha
 
