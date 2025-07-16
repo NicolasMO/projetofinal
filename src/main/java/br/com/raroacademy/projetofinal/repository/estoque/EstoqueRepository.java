@@ -27,9 +27,10 @@ public interface EstoqueRepository extends JpaRepository<Equipamento, String>{
 	        GROUP BY t.id, t.nome, t.estoqueMinimo
 	        ORDER BY t.nome
 	    """)
-	    List<EstoqueGeralRespostaDTO> listarEstoquePorTipoEStatus(
+	    Page<EstoqueGeralRespostaDTO> listarEstoquePorTipoEStatus(
 	    		@Param("tipoEquipamento") String tipoEquipamento,
-	    		@Param("status") List<STATUS_EQUIPAMENTO> status
+	    		@Param("status") List<STATUS_EQUIPAMENTO> status,
+	    		Pageable paginacao
 		);
 	
 	@Query("""

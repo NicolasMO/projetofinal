@@ -1,5 +1,6 @@
 package br.com.raroacademy.projetofinal.controller.equipamento;
 
+import br.com.raroacademy.projetofinal.enums.STATUS_EQUIPAMENTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -52,7 +53,7 @@ public class EquipamentoController {
     
     @PutMapping("/{numeroSerie}")
     public ResponseEntity<String> atualizar(@PathVariable String numeroSerie, @Valid @RequestBody EquipamentoAtualizarDTO dto) {
-        equipamentoService.atualizar(numeroSerie, dto);
+        equipamentoService.atualizar(numeroSerie, dto, STATUS_EQUIPAMENTO.DISPONIVEL);
         return ResponseEntity.ok("Equipamento alterado com sucesso!");
     }
     

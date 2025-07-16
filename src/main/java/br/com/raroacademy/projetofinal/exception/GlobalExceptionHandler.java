@@ -19,6 +19,9 @@ import br.com.raroacademy.projetofinal.exception.equipamento.EspecificacaoNaoEnc
 import br.com.raroacademy.projetofinal.exception.equipamento.NumeroSerieDuplicadoException;
 import br.com.raroacademy.projetofinal.exception.equipamento.TipoEquipamentoDuplicadoException;
 import br.com.raroacademy.projetofinal.exception.equipamento.TipoEquipamentoNaoEncontradoException;
+import br.com.raroacademy.projetofinal.exception.estoque.EstoqueNaoEncontradoException;
+import br.com.raroacademy.projetofinal.exception.pedido.EquipamentoJaEntregueException;
+import br.com.raroacademy.projetofinal.exception.pedido.NenhumPedidoEncontradoException;
 import br.com.raroacademy.projetofinal.exception.usuario.EmailJaCadastradoException;
 import br.com.raroacademy.projetofinal.exception.usuario.SenhaRepetidaException;
 import br.com.raroacademy.projetofinal.exception.usuario.TokenExpiradoOuUtilizadoException;
@@ -213,5 +216,40 @@ public class GlobalExceptionHandler {
             List.of(ex.getMessage())
         );
         return ResponseEntity.status(HttpStatus.CONFLICT).body(resposta);
+    }
+    
+    // Exceptions de pedidos
+    @ExceptionHandler(NenhumPedidoEncontradoException.class)
+    public ResponseEntity<ApiErroResposta> tratarNenhumPedido(NenhumPedidoEncontradoException ex) {
+        ApiErroResposta resposta = new ApiErroResposta(
+            HttpStatus.NOT_FOUND.value(),
+            "Nenhum pedido encontrado",
+            ex.getMessage(),
+            List.of(ex.getMessage())
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resposta);
+    }
+    
+    @ExceptionHandler(EquipamentoJaEntregueException.class)
+    public ResponseEntity<ApiErroResposta> tratarNenhumPedido(EquipamentoJaEntregueException ex) {
+    	ApiErroResposta resposta = new ApiErroResposta(
+    			HttpStatus.CONFLICT.value(),
+    			"Equipamento já cadastrado.",
+    			ex.getMessage(),
+    			List.of(ex.getMessage())
+    			);
+    	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resposta);
+    }
+    
+    // Exceptions de estoque
+    @ExceptionHandler(EstoqueNaoEncontradoException.class)
+    public ResponseEntity<ApiErroResposta> tratarEstoqueNaoEncontrado(EstoqueNaoEncontradoException ex) {
+        ApiErroResposta resposta = new ApiErroResposta(
+            HttpStatus.NOT_FOUND.value(),
+            "Nenhum equipamento encontrado no estoque",
+            ex.getMessage(),
+            List.of(ex.getMessage())
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resposta);
     }
 }

@@ -110,9 +110,9 @@
 				<artifactId>flyway-maven-plugin</artifactId>
 				<version>11.7.2</version>
 				<configuration>
-					<url>jdbc:postgresql://localhost:5432/projetofinal</url>
+					<url>jdbc:postgresql://localhost:5432/raro_inventario</url>
 					<user>postgres</user>
-					<password>postgres</password>
+					<password>123456</password>
 					<schemas>
 						<schema>public</schema>
 					</schemas>

@@ -1,7 +1,7 @@
 package br.com.raroacademy.projetofinal.model.equipamento;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -60,5 +60,5 @@ public class Equipamento {
 	     joinColumns = @JoinColumn(name = "numero_serie"),
 	     inverseJoinColumns = @JoinColumn(name = "especificacao_id")
 	 )
-	 private List<Especificacao> especificacoes;
+	 private Set<Especificacao> especificacoes;
 }

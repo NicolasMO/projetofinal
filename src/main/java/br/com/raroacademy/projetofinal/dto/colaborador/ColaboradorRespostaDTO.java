@@ -9,8 +9,8 @@ public record ColaboradorRespostaDTO(
         String cpf,
         String cargo,
         String telefone,
-        Date dataAdmissao,
-        Date dataDemissao,
+        Date data_admissao,
+        Date data_demissao,
         EnderecoRespostaDTO enderecos
 
 ) {

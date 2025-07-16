@@ -1,6 +1,7 @@
 package br.com.raroacademy.projetofinal.model.colaborador;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.sql.Date;
@@ -20,6 +21,7 @@ public class Colaborador {
     private Long id;
 
     @Column(nullable = false)
+    @NotNull(message = "O nome não pode ser nulo!")
     private String nome;
 
     @Column(length = 50, nullable = false, unique = true)
@@ -39,6 +41,9 @@ public class Colaborador {
 
     @Column(name = "data_demissao")
     private Date data_demissao;
+
+    @Column(name = "status_ativo", nullable = false)
+    private Boolean statusAtivo;
 
     @OneToOne(mappedBy = "colaborador", cascade = CascadeType.ALL, orphanRemoval = true)
     private EnderecoColaborador endereco;

@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.raroacademy.projetofinal.dto.equipamento.AtualizarTipoEquipamentoEstoqueMinimoDTO;
 import br.com.raroacademy.projetofinal.dto.equipamento.TipoEquipamentoRequisicaoDTO;
 import br.com.raroacademy.projetofinal.dto.equipamento.TipoEquipamentoRespostaDTO;
-import br.com.raroacademy.projetofinal.dto.estoque.AtualizarEstoqueMinimoDTO;
 import br.com.raroacademy.projetofinal.service.equipamento.TipoEquipamentoService;
 import jakarta.validation.Valid;
 
@@ -58,7 +58,7 @@ public class TipoEquipamentoController {
     }
     
     @PatchMapping("/{id}/estoque-minimo")
-    public ResponseEntity<String> atualizarEstoqueMinimo(@PathVariable Long id, @RequestBody @Valid AtualizarEstoqueMinimoDTO dto) {
+    public ResponseEntity<String> atualizarEstoqueMinimo(@PathVariable Long id, @RequestBody @Valid AtualizarTipoEquipamentoEstoqueMinimoDTO dto) {
         tipoEquipamentoService.atualizarEstoqueMinimo(id, dto);
         return ResponseEntity.ok("Estoque mínimo atualizado com sucesso!");
     }

@@ -3,6 +3,7 @@ package br.com.raroacademy.projetofinal.controller.estoque;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +25,15 @@ public class EstoqueController {
 	private EstoqueService estoqueService;
 	
 	@GetMapping("/geral")
-	public ResponseEntity<List<EstoqueGeralRespostaDTO>> listarEstoqueGeral(
+	public ResponseEntity<Page<EstoqueGeralRespostaDTO>> listarEstoqueGeral(
 			@RequestParam(required = false) String tipoEquipamento,
-			@RequestParam(required = false) List<STATUS_EQUIPAMENTO> status
+			@RequestParam(required = false) List<STATUS_EQUIPAMENTO> status,
+			@RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "10") int tamanho
 		) 
 	{
-        List<EstoqueGeralRespostaDTO> estoque = estoqueService.obterEstoqueGeral(tipoEquipamento, status);
+		Pageable paginacao = PageRequest.of(pagina, tamanho);
+        Page<EstoqueGeralRespostaDTO> estoque = estoqueService.obterEstoqueGeral(tipoEquipamento, status, paginacao);
         return ResponseEntity.ok(estoque);
     }
 	

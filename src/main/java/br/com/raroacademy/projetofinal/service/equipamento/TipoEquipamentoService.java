@@ -5,9 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import br.com.raroacademy.projetofinal.dto.equipamento.AtualizarTipoEquipamentoEstoqueMinimoDTO;
 import br.com.raroacademy.projetofinal.dto.equipamento.TipoEquipamentoRequisicaoDTO;
 import br.com.raroacademy.projetofinal.dto.equipamento.TipoEquipamentoRespostaDTO;
-import br.com.raroacademy.projetofinal.dto.estoque.AtualizarEstoqueMinimoDTO;
 import br.com.raroacademy.projetofinal.exception.equipamento.TipoEquipamentoDuplicadoException;
 import br.com.raroacademy.projetofinal.exception.equipamento.TipoEquipamentoNaoEncontradoException;
 import br.com.raroacademy.projetofinal.model.equipamento.TipoEquipamento;
@@ -48,7 +48,7 @@ public class TipoEquipamentoService {
         tipoEquipamentoRepository.save(tipo);
     }
     
-    public void atualizarEstoqueMinimo(Long id, AtualizarEstoqueMinimoDTO dto) {
+    public void atualizarEstoqueMinimo(Long id, AtualizarTipoEquipamentoEstoqueMinimoDTO dto) {
         TipoEquipamento tipo = buscarTipoPorId(id);
         tipo.setEstoqueMinimo(dto.estoqueMinimo());
         tipoEquipamentoRepository.save(tipo);

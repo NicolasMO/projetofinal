@@ -1,8 +1,9 @@
 package br.com.raroacademy.projetofinal.service.equipamento;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import br.com.raroacademy.projetofinal.service.estoque.EstoqueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ import br.com.raroacademy.projetofinal.model.equipamento.TipoEquipamento;
 import br.com.raroacademy.projetofinal.repository.equipamento.EquipamentoRepository;
 import br.com.raroacademy.projetofinal.repository.equipamento.EspecificacaoRepository;
 import br.com.raroacademy.projetofinal.repository.equipamento.TipoEquipamentoRepository;
+import br.com.raroacademy.projetofinal.service.estoque.EstoqueService;
 import jakarta.validation.constraints.NotNull;
 
 @Service
@@ -52,7 +54,7 @@ public class EquipamentoService {
         TipoEquipamento tipo = buscarTipoPorId(dto.tipoEquipamentoId());
 
         // buscar as especificacoes
-        List<Especificacao> especificacoes = especificacaoRepository.findAllById(dto.especificacoesIds());
+        Set<Especificacao> especificacoes = new HashSet<>(especificacaoRepository.findAllById(dto.especificacoesIds()));
 
         if (especificacoes.size() != dto.especificacoesIds().size()) {
             throw new EspecificacaoNaoEncontradaException("Uma ou mais especificações fornecidas não foram encontradas.");
@@ -86,12 +88,12 @@ public class EquipamentoService {
         		.map(this::mapearParaDTO);
     }
     
-    public EquipamentoRespostaDTO atualizar(String numeroSerie, EquipamentoAtualizarDTO dto) {
+    public EquipamentoRespostaDTO atualizar(String numeroSerie, EquipamentoAtualizarDTO dto, STATUS_EQUIPAMENTO status) {
         Equipamento equipamento = buscarEquipamentoPorNumSerie(numeroSerie);
 
         TipoEquipamento tipo = buscarTipoPorId(dto.tipoEquipamentoId());
 
-        List<Especificacao> especificacoes = especificacaoRepository.findAllById(dto.especificacoesIds());
+        Set<Especificacao> especificacoes = new HashSet<>(especificacaoRepository.findAllById(dto.especificacoesIds()));
         
         if (especificacoes.size() != dto.especificacoesIds().size()) {
             throw new EspecificacaoNaoEncontradaException("Uma ou mais especificações fornecidas não foram encontradas.");
@@ -101,6 +103,7 @@ public class EquipamentoService {
         equipamento.setMarca(dto.marca());
         equipamento.setTipoEquipamento(tipo);
         equipamento.setEspecificacoes(especificacoes);
+        equipamento.setStatus(status);
 
         Equipamento atualizado = equipamentoRepository.save(equipamento);
 
