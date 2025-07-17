@@ -30,7 +30,7 @@ public class EstoqueController {
 			@RequestParam(required = false) List<STATUS_EQUIPAMENTO> status,
 			@RequestParam(defaultValue = "0") int pagina,
             @RequestParam(defaultValue = "10") int tamanho
-		) 
+			) 
 	{
 		Pageable paginacao = PageRequest.of(pagina, tamanho);
         Page<EstoqueGeralRespostaDTO> estoque = estoqueService.obterEstoqueGeral(tipoEquipamento, status, paginacao);

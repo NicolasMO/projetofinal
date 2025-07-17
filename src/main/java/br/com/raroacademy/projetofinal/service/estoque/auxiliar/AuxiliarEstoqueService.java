@@ -54,9 +54,7 @@ public class AuxiliarEstoqueService {
     public Map<Long, List<Equipamento>> agruparPorTipo(List<Equipamento> equipamentos) {
         return equipamentos.stream()
             .collect(Collectors.groupingBy(e -> e.getTipoEquipamento().getId()));
-    }
-    
-    
+    }  
     
     public void validarEstoqueNaoVazio(Page<?> pagina, String mensagemErro) {
         if (pagina.isEmpty()) {
@@ -97,6 +95,9 @@ public class AuxiliarEstoqueService {
     }
 	
 	private void verificarEEnviarAlertaEstoqueBaixo(String tipoEquipamento, Long quantidadeAtual, Integer estoqueMinimo) {
+		System.out.println(tipoEquipamento);
+		System.out.println(quantidadeAtual);
+		System.out.println(estoqueMinimo);
         if (quantidadeAtual <= estoqueMinimo) {
             String assunto = "Alerta de Estoque Baixo";
             String corpo = "<p>O estoque do equipamento <strong>" + tipoEquipamento + "</strong> está abaixo do mínimo necessário.</p>" +

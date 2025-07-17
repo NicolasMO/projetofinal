@@ -19,38 +19,44 @@ import br.com.raroacademy.projetofinal.service.estoque.auxiliar.AuxiliarEstoqueS
 @Service
 public class EstoqueService {
 
-	
 	@Autowired
 	private AuxiliarEstoqueService auxiliarEstoqueService;
 
-    public Page<EstoqueGeralRespostaDTO> obterEstoqueGeral(String tipoEquipamento, List<STATUS_EQUIPAMENTO> status, Pageable paginacao) {
-    	String tipoEquipamentoNormalizado = auxiliarEstoqueService.normalizarTipoEquipamento(tipoEquipamento);
-    	
-    	if (tipoEquipamento != null && !tipoEquipamento.trim().isEmpty()) {
-    		auxiliarEstoqueService.validarTipoEquipamento(tipoEquipamento);
-        }
+	public Page<EstoqueGeralRespostaDTO> obterEstoqueGeral(String tipoEquipamento, List<STATUS_EQUIPAMENTO> status,
+			Pageable paginacao) {
+		String tipoEquipamentoNormalizado = auxiliarEstoqueService.normalizarTipoEquipamento(tipoEquipamento);
 
-    	Page<EstoqueGeralRespostaDTO> estoqueEquipamentos = auxiliarEstoqueService.listarEstoquePorTipoEStatus(tipoEquipamentoNormalizado, status, paginacao);
+		if (tipoEquipamento != null && !tipoEquipamento.trim().isEmpty()) {
+			auxiliarEstoqueService.validarTipoEquipamento(tipoEquipamento);
+		}
 
-    	auxiliarEstoqueService.validarEstoqueNaoVazio(estoqueEquipamentos, "Nenhum equipamento encontrado para os filtros informados.");
-    	
-        return estoqueEquipamentos;
-    }
-    
-    public EstoqueDetalhadoPaginaDTO obterEstoqueDetalhado(String tipoEquipamento, List<STATUS_EQUIPAMENTO> status, Pageable paginacao) {
-        auxiliarEstoqueService.validarTipoEquipamentoObrigatorio(tipoEquipamento);
+		Page<EstoqueGeralRespostaDTO> estoqueEquipamentos = auxiliarEstoqueService
+				.listarEstoquePorTipoEStatus(tipoEquipamentoNormalizado, status, paginacao);
 
-        Page<Equipamento> estoquePagina = auxiliarEstoqueService.buscarEstoqueDeEquipamentosDetalhado(tipoEquipamento, status, paginacao);
-        
-        auxiliarEstoqueService.validarEstoqueNaoVazio(estoquePagina, "Nenhum equipamento encontrado para os filtros informados.");
+		auxiliarEstoqueService.validarEstoqueNaoVazio(estoqueEquipamentos,
+				"Nenhum equipamento encontrado para os filtros informados.");
 
-        Map<Long, List<Equipamento>> agrupadoPorTipo = auxiliarEstoqueService.agruparPorTipo(estoquePagina.getContent());
-        List<EstoqueDetalhadoRespostaDTO> estoqueEquipamentos = MapeadorDeEstoque.mapearPaginaEstoqueDetalhado(agrupadoPorTipo, status);
-        
-        return MapeadorDeEstoque.mapearParaPaginaDTO(estoqueEquipamentos, estoquePagina.getNumber(),
-        				estoquePagina.getTotalPages(), estoquePagina.getTotalElements(),
-        				estoquePagina.getSize(), estoquePagina.isLast()
-        				);   
-    }
-  
+		return estoqueEquipamentos;
+	}
+
+	public EstoqueDetalhadoPaginaDTO obterEstoqueDetalhado(String tipoEquipamento, List<STATUS_EQUIPAMENTO> status,
+			Pageable paginacao) {
+		auxiliarEstoqueService.validarTipoEquipamentoObrigatorio(tipoEquipamento);
+
+		Page<Equipamento> estoquePagina = auxiliarEstoqueService.buscarEstoqueDeEquipamentosDetalhado(tipoEquipamento,
+				status, paginacao);
+
+		auxiliarEstoqueService.validarEstoqueNaoVazio(estoquePagina,
+				"Nenhum equipamento encontrado para os filtros informados.");
+
+		Map<Long, List<Equipamento>> agrupadoPorTipo = auxiliarEstoqueService
+				.agruparPorTipo(estoquePagina.getContent());
+		List<EstoqueDetalhadoRespostaDTO> estoqueEquipamentos = MapeadorDeEstoque
+				.mapearPaginaEstoqueDetalhado(agrupadoPorTipo, status);
+
+		return MapeadorDeEstoque.mapearParaPaginaDTO(estoqueEquipamentos, estoquePagina.getNumber(),
+				estoquePagina.getTotalPages(), estoquePagina.getTotalElements(), estoquePagina.getSize(),
+				estoquePagina.isLast());
+	}
+
 }

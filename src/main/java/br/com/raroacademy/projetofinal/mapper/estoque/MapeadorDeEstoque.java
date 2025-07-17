@@ -24,12 +24,12 @@ public class MapeadorDeEstoque {
 	            long totalComStatus = equipamentos.stream()
 	                .filter(e -> status == null || status.isEmpty() || status.contains(e.getStatus()))
 	                .count();
-	            return MapeadorDeEstoque.converteParaDetalhadoRespostaDTO(equipamentos, status, total, totalComStatus);
+	            return MapeadorDeEstoque.paraEstoqueDetalhadoRespostaDTO(equipamentos, status, total, totalComStatus);
 	        })
 	        .toList();
 	}
 	
-	public static EstoqueDetalhadoRespostaDTO converteParaDetalhadoRespostaDTO(List<Equipamento> equipamentos, List<STATUS_EQUIPAMENTO> status, Long total, Long totalComStatus) {
+	public static EstoqueDetalhadoRespostaDTO paraEstoqueDetalhadoRespostaDTO(List<Equipamento> equipamentos, List<STATUS_EQUIPAMENTO> status, Long total, Long totalComStatus) {
         if (equipamentos == null || equipamentos.isEmpty()) {
             throw new IllegalArgumentException("Lista de equipamentos vazia.");
         }

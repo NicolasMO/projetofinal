@@ -24,24 +24,24 @@ public class TipoEquipamentoService {
         TipoEquipamento tipoEquipamento = new TipoEquipamento(dto.nome(), dto.tempoConfiguracao(), dto.estoqueMinimo());
         auxiliarTipoEquipamentoService.salvarTipoEquipamento(tipoEquipamento);
         
-        return MapeadorDeTiposEquipamentos.converteParaDTO(tipoEquipamento);
+        return MapeadorDeTiposEquipamentos.paraTipoEquipamentoRespostaDTO(tipoEquipamento);
     }
 
     public TipoEquipamentoRespostaDTO buscarPorId(Long id) {
-        return MapeadorDeTiposEquipamentos.converteParaDTO(auxiliarTipoEquipamentoService.buscarTipoPorId(id));
+        return MapeadorDeTiposEquipamentos.paraTipoEquipamentoRespostaDTO(auxiliarTipoEquipamentoService.buscarTipoPorId(id));
     }
 
     public Page<TipoEquipamentoRespostaDTO> listarTodos(Pageable paginacao) {
         return auxiliarTipoEquipamentoService.listarTodos(paginacao)
-        		.map(MapeadorDeTiposEquipamentos::converteParaDTO);
+        		.map(MapeadorDeTiposEquipamentos::paraTipoEquipamentoRespostaDTO);
     }
     
-    public TipoEquipamentoRespostaDTO atualizar(Long id, TipoEquipamentoRequisicaoDTO dto) {
+    public TipoEquipamentoRespostaDTO atualizarTipoEquipamento(Long id, TipoEquipamentoRequisicaoDTO dto) {
         TipoEquipamento tipoEquipamento = auxiliarTipoEquipamentoService.buscarTipoPorId(id);
         tipoEquipamento.atualizarDados(dto.nome(), dto.tempoConfiguracao(), dto.estoqueMinimo());
         auxiliarTipoEquipamentoService.salvarTipoEquipamento(tipoEquipamento);
         
-        return MapeadorDeTiposEquipamentos.converteParaDTO(tipoEquipamento);
+        return MapeadorDeTiposEquipamentos.paraTipoEquipamentoRespostaDTO(tipoEquipamento);
     }
     
     public TipoEquipamentoRespostaDTO atualizarEstoqueMinimo(Long id, AtualizarTipoEquipamentoEstoqueMinimoDTO dto) {
@@ -49,7 +49,7 @@ public class TipoEquipamentoService {
         tipoEquipamento.setEstoqueMinimo(dto.estoqueMinimo());
         auxiliarTipoEquipamentoService.salvarTipoEquipamento(tipoEquipamento);
         
-        return MapeadorDeTiposEquipamentos.converteParaDTO(tipoEquipamento);
+        return MapeadorDeTiposEquipamentos.paraTipoEquipamentoRespostaDTO(tipoEquipamento);
     }
 
     public void deletar(Long id) {

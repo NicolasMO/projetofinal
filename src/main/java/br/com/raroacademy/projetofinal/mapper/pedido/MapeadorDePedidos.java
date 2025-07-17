@@ -12,6 +12,7 @@ import br.com.raroacademy.projetofinal.dto.pedido.EquipamentoPedidoDTO;
 import br.com.raroacademy.projetofinal.dto.pedido.EquipamentoPedidoEspecificacaoDTO;
 import br.com.raroacademy.projetofinal.dto.pedido.PedidoRequisicaoDTO;
 import br.com.raroacademy.projetofinal.dto.pedido.PedidoRespostaDTO;
+import br.com.raroacademy.projetofinal.dto.pedido.PedidoRespostaPaginaDTO;
 import br.com.raroacademy.projetofinal.enums.STATUS_EQUIPAMENTO;
 import br.com.raroacademy.projetofinal.enums.STATUS_PEDIDO;
 import br.com.raroacademy.projetofinal.model.equipamento.Equipamento;
@@ -27,15 +28,24 @@ import br.com.raroacademy.projetofinal.service.equipamento.auxiliar.AuxiliarTipo
 public class MapeadorDePedidos {
 	
 	@Autowired
-	private static AuxiliarTipoEquipamentoService auxiliarTipoEquipamentoService;
+	private AuxiliarTipoEquipamentoService auxiliarTipoEquipamentoService;
 	
 	@Autowired
-	private static AuxiliarEspecificacaoService auxiliarEspecificacaoService;
+	private AuxiliarEspecificacaoService auxiliarEspecificacaoService;
 	
-	public static Equipamento paraEntidadeEquipamento(EquipamentoPedido equipamentoPedido, String numeroSerie) {
+	public static PedidoRespostaPaginaDTO montarPagina(long totalSolicitados, long totalEntregues, long totalPendentes,
+			    List<PedidoRespostaDTO> entregasDTO, int numeroPagina, int totalPaginas, long totalElementos) 
+	{    
+		return new PedidoRespostaPaginaDTO( totalSolicitados, totalEntregues, totalPendentes,
+		        entregasDTO, numeroPagina, totalPaginas, totalElementos
+    		);
+	}
+	
+	public Equipamento paraEntidadeEquipamento(EquipamentoPedido equipamentoPedido, String numeroSerie) {
         Set<Especificacao> especificacoes = equipamentoPedido.getEspecificacoes().stream()
-        		.map(espec -> new Especificacao(espec.getDescricao(), espec.getValor()))
-        		.collect(Collectors.toSet());
+        		.map(especificacao -> auxiliarEspecificacaoService.buscarEspecificacaoPorDescricaoEValor(
+        					especificacao.getDescricao(), especificacao.getValor()
+    					)).collect(Collectors.toSet());
 
         return new Equipamento(
         		numeroSerie,
@@ -60,7 +70,7 @@ public class MapeadorDePedidos {
         return pedido;
     }
 
-    public static EquipamentoPedido paraEntidadeEquipamentoPedido(EquipamentoPedidoDTO equipDTO, Pedido pedido) {
+    public EquipamentoPedido paraEntidadeEquipamentoPedido(EquipamentoPedidoDTO equipDTO, Pedido pedido) {
         TipoEquipamento tipoEquipamento = auxiliarTipoEquipamentoService.buscarTipoPorNome(equipDTO.tipoEquipamento());
 
         EquipamentoPedido equipamentoPedido = new EquipamentoPedido(pedido, equipDTO.marca(), equipDTO.modelo(), tipoEquipamento);
@@ -72,13 +82,7 @@ public class MapeadorDePedidos {
         equipamentoPedido.setEspecificacoes(especificacoes);
 
         return equipamentoPedido;
-    }
-
-    private static EquipamentoPedidoEspecificacao mapearEspecificacao(EquipamentoPedidoEspecificacaoDTO especDTO, EquipamentoPedido equipamentoPedido) {
-        Especificacao espec = auxiliarEspecificacaoService.buscarEspecificacaoPorDescricaoEValor(especDTO.descricao(), especDTO.valor());
-        return new EquipamentoPedidoEspecificacao(espec.getDescricao(), espec.getValor(), equipamentoPedido);
-    }
-	
+    }	
 	
 	public PedidoRespostaDTO paraPedidoRespostaDTO(Pedido pedido) {
 		List<EquipamentoPedidoDTO> equipamentosDTO = pedido.getEquipamentos()
@@ -116,5 +120,10 @@ public class MapeadorDePedidos {
 	            espec.getDescricao(),
 	            espec.getValor()
     		);
+    }
+    
+    private EquipamentoPedidoEspecificacao mapearEspecificacao(EquipamentoPedidoEspecificacaoDTO especDTO, EquipamentoPedido equipamentoPedido) {
+        Especificacao espec = auxiliarEspecificacaoService.buscarEspecificacaoPorDescricaoEValor(especDTO.descricao(), especDTO.valor());
+        return new EquipamentoPedidoEspecificacao(espec.getDescricao(), espec.getValor(), equipamentoPedido);
     }
 }

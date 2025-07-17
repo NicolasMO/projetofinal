@@ -30,33 +30,33 @@ public class EquipamentoService {
     public EquipamentoRespostaDTO criar(EquipamentoRequisicaoDTO dto) {
     	auxiliarEquipamentoService.validarNumeroSerieNaoExistente(dto.numeroSerie());
     	
-    	TipoEquipamento tipo = auxiliarEquipamentoService.buscarTipoPorId(dto.tipoEquipamentoId());
+    	TipoEquipamento tipoEquipamento = auxiliarEquipamentoService.buscarTipoPorId(dto.tipoEquipamentoId());
         Set<Especificacao> especificacoes = auxiliarEquipamentoService.buscarEspecificacoesValidas(dto.especificacoesIds());
 
-        Equipamento novoEquipamento = MapeadorDeEquipamentos.converteDoDTO(dto, tipo, especificacoes);
+        Equipamento novoEquipamento = MapeadorDeEquipamentos.paraEntidadeEquipamento(dto, tipoEquipamento, especificacoes);
         auxiliarEquipamentoService.salvarEquipamento(novoEquipamento);
-        auxiliarEstoqueService.verificarEstoquePorTipo(tipo.getId());
+        auxiliarEstoqueService.verificarEstoquePorTipo(tipoEquipamento.getId());
         
-        return MapeadorDeEquipamentos.converteParaDTO(novoEquipamento);
+        return MapeadorDeEquipamentos.paraEquipamentoRespostaDTO(novoEquipamento);
     }
 
     public EquipamentoRespostaDTO buscarPorNumeroSerie(String numeroSerie) {
-        return MapeadorDeEquipamentos.converteParaDTO(auxiliarEquipamentoService.buscarEquipamentoPorNumSerie(numeroSerie));
+        return MapeadorDeEquipamentos.paraEquipamentoRespostaDTO(auxiliarEquipamentoService.buscarEquipamentoPorNumSerie(numeroSerie));
     }
 
     public Page<EquipamentoRespostaDTO> listarTodos(Pageable paginacao) {
     	return auxiliarEquipamentoService.listarTodos(paginacao)
-    	        .map(MapeadorDeEquipamentos::converteParaDTO);
+    	        .map(MapeadorDeEquipamentos::paraEquipamentoRespostaDTO);
     }
     
     public EquipamentoRespostaDTO atualizarEquipamento(String numeroSerie, EquipamentoAtualizarDTO dto) {
     	Equipamento equipamento = auxiliarEquipamentoService.buscarEquipamentoPorNumSerie(numeroSerie);
-        TipoEquipamento tipo = auxiliarEquipamentoService.buscarTipoPorId(dto.tipoEquipamentoId());
+        TipoEquipamento tipoEquipamento = auxiliarEquipamentoService.buscarTipoPorId(dto.tipoEquipamentoId());
         Set<Especificacao> especificacoes = auxiliarEquipamentoService.buscarEspecificacoesValidas(dto.especificacoesIds());
 
-        equipamento.atualizarComDTO(dto, tipo, especificacoes);
+        equipamento.atualizarComDTO(dto, tipoEquipamento, especificacoes);
         
-        return MapeadorDeEquipamentos.converteParaDTO(equipamento);
+        return MapeadorDeEquipamentos.paraEquipamentoRespostaDTO(equipamento);
     }
     
     public void deletarEquipamento(String numeroSerie) {

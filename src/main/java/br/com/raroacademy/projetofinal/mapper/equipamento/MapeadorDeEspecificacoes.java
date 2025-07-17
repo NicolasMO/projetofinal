@@ -8,7 +8,7 @@ import br.com.raroacademy.projetofinal.model.equipamento.Especificacao;
 @Component
 public class MapeadorDeEspecificacoes {
 
-	public static EspecificacaoRespostaDTO converteParaDTO(Especificacao especificacao) {
+	public static EspecificacaoRespostaDTO paraEspecificacaoRespostaDTO(Especificacao especificacao) {
 		return new EspecificacaoRespostaDTO(
 				especificacao.getId(),
 				especificacao.getDescricao(),

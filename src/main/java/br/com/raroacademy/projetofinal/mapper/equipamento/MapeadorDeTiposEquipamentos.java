@@ -8,7 +8,7 @@ import br.com.raroacademy.projetofinal.model.equipamento.TipoEquipamento;
 @Component
 public class MapeadorDeTiposEquipamentos {
 	
-	public static TipoEquipamentoRespostaDTO converteParaDTO(TipoEquipamento tipoEquipamento) {
+	public static TipoEquipamentoRespostaDTO paraTipoEquipamentoRespostaDTO(TipoEquipamento tipoEquipamento) {
 		return new TipoEquipamentoRespostaDTO(
 				tipoEquipamento.getId(),
 				tipoEquipamento.getNome(),

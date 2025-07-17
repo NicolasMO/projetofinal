@@ -34,38 +34,22 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 	@Query("SELECT DISTINCT p FROM Pedido p " +
 		       "JOIN FETCH p.equipamentos eq " +
 		       "JOIN FETCH eq.especificacoes espec " +
-		       "WHERE p.dataPrevisaoEntrega BETWEEN :inicio AND :fim " +
+		       "WHERE p.dataEntrega BETWEEN :inicio AND :fim " +
 		       "AND eq.entregue = true")
 	Page<Pedido> findPedidosComEquipamentosEntreguesNoPeriodo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim, Pageable paginacao);
-	
-	@Query("SELECT DISTINCT p FROM Pedido p " +
-		       "JOIN FETCH p.equipamentos eq " +
-		       "JOIN FETCH eq.tipoEquipamento " +
-		       "JOIN FETCH eq.especificacoes " +
-		       "WHERE p.dataPrevisaoEntrega BETWEEN :inicio AND :fim " +
-		       "AND eq.entregue = false AND eq.tipoEquipamento = :tipo")
-	Page<Pedido> findPedidosPorTipoEquipamentoNoPeriodo(@Param("tipo") TipoEquipamento tipo,
-	                                             @Param("inicio") LocalDate inicio,
-	                                             @Param("fim") LocalDate fim,
-	                                             Pageable pageable);
-	
+		
 	@Query("SELECT e FROM EquipamentoPedido e WHERE e.id = :id")
     Optional<EquipamentoPedido> buscarEquipamentoEntregaPorId(@Param("id") Long id);
-	
 
 	@Query("SELECT COUNT(eq) FROM EquipamentoPedido eq " +
-	       "WHERE eq.pedido.dataPrevisaoEntrega BETWEEN :inicio AND :fim " +
-	       "AND eq.tipoEquipamento = :tipo")
-	long contarTotalPorTipo(@Param("tipo") TipoEquipamento tipo,
-	                        @Param("inicio") LocalDate inicio,
-	                        @Param("fim") LocalDate fim);
+		       "WHERE eq.pedido.dataPrevisaoEntrega BETWEEN :inicio AND :fim " +
+		       "AND eq.tipoEquipamento = :tipo")
+	long contarTotalPorTipo(@Param("tipo") TipoEquipamento tipo, @Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
 
 	@Query("SELECT COUNT(eq) FROM EquipamentoPedido eq " +
-	       "WHERE eq.pedido.dataPrevisaoEntrega BETWEEN :inicio AND :fim " +
-	       "AND eq.entregue = true AND eq.tipoEquipamento = :tipo")
-	long contarEntreguesPorTipo(@Param("tipo") TipoEquipamento tipo,
-	                            @Param("inicio") LocalDate inicio,
-	                            @Param("fim") LocalDate fim);
+		       "WHERE eq.pedido.dataPrevisaoEntrega BETWEEN :inicio AND :fim " +
+		       "AND eq.entregue = true AND eq.tipoEquipamento = :tipo")
+	long contarEntreguesPorTipo(@Param("tipo") TipoEquipamento tipo, @Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
 	
 	@Query("SELECT COUNT(equip) FROM EquipamentoPedido equip WHERE equip.pedido.dataSolicitacao BETWEEN :inicio AND :fim")
 	long contarTotalEquipamentosSolicitadosNoPeriodo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
@@ -78,7 +62,5 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
 	@Query("SELECT COUNT(equip) FROM EquipamentoPedido equip WHERE equip.entregue = true AND equip.pedido.dataPrevisaoEntrega BETWEEN :inicio AND :fim")
 	long contarEquipamentosEntreguesComPrevisaoNoPeriodo(@Param("inicio") LocalDate inicio, @Param("fim") LocalDate fim);
-	
-
 	
 }

@@ -2,7 +2,6 @@ package br.com.raroacademy.projetofinal.controller.equipamento;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,14 +34,13 @@ public class TipoEquipamentoController {
     }
 	
 	@GetMapping
-    public ResponseEntity<Page<TipoEquipamentoRespostaDTO>> listarPaginado(
-        @RequestParam(defaultValue = "0") int pagina,
-        @RequestParam(defaultValue = "10") int tamanho
-		) 
+    public ResponseEntity<Page<TipoEquipamentoRespostaDTO>> listarTodos(
+	        @RequestParam(defaultValue = "0") int pagina,
+	        @RequestParam(defaultValue = "10") int tamanho,
+	        Pageable paginacao
+			) 
 	{
-        Pageable paginacao = PageRequest.of(pagina, tamanho);
-        Page<TipoEquipamentoRespostaDTO> paginaResultado = tipoEquipamentoService.listarTodos(paginacao);
-        return ResponseEntity.ok(paginaResultado);
+        return ResponseEntity.ok(tipoEquipamentoService.listarTodos(paginacao));
     }
 
     @PostMapping
@@ -52,7 +50,7 @@ public class TipoEquipamentoController {
     
     @PutMapping("/{id}")
     public ResponseEntity<TipoEquipamentoRespostaDTO> atualizar(@PathVariable Long id, @Valid @RequestBody TipoEquipamentoRequisicaoDTO dto) {
-        return ResponseEntity.ok(tipoEquipamentoService.atualizar(id, dto));
+        return ResponseEntity.ok(tipoEquipamentoService.atualizarTipoEquipamento(id, dto));
     }
     
     @PatchMapping("/{id}/estoque-minimo")

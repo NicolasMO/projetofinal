@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import br.com.raroacademy.projetofinal.dto.equipamento.equipamento.EquipamentoRequisicaoDTO;
 import br.com.raroacademy.projetofinal.dto.equipamento.equipamento.EquipamentoRespostaDTO;
 import br.com.raroacademy.projetofinal.dto.equipamento.especificacao.EspecificacaoRespostaDTO;
-import br.com.raroacademy.projetofinal.enums.STATUS_EQUIPAMENTO;
 import br.com.raroacademy.projetofinal.model.equipamento.Equipamento;
 import br.com.raroacademy.projetofinal.model.equipamento.Especificacao;
 import br.com.raroacademy.projetofinal.model.equipamento.TipoEquipamento;
@@ -16,7 +15,7 @@ import br.com.raroacademy.projetofinal.model.equipamento.TipoEquipamento;
 @Component
 public class MapeadorDeEquipamentos {
 
-    public static EquipamentoRespostaDTO converteParaDTO(Equipamento equipamento) {
+    public static EquipamentoRespostaDTO paraEquipamentoRespostaDTO(Equipamento equipamento) {
         List<EspecificacaoRespostaDTO> especificacoes = equipamento.getEspecificacoes()
             .stream()
             .map(espec -> new EspecificacaoRespostaDTO(espec.getId(), espec.getDescricao(), espec.getValor()))
@@ -34,7 +33,7 @@ public class MapeadorDeEquipamentos {
         );
     }
     
-    public static Equipamento converteDoDTO(EquipamentoRequisicaoDTO dto, TipoEquipamento tipo, Set<Especificacao> especificacoes) {
+    public static Equipamento paraEntidadeEquipamento(EquipamentoRequisicaoDTO dto, TipoEquipamento tipo, Set<Especificacao> especificacoes) {
         return new Equipamento(
             dto.numeroSerie(),
             dto.modelo(),

@@ -25,16 +25,16 @@ public class EspecificacaoService {
 	    Especificacao especificacao = new Especificacao(dto.descricao(), dto.valor());
 	    auxiliarEspecificacaoService.salvarEspecificacao(especificacao);
 	    
-	    return MapeadorDeEspecificacoes.converteParaDTO(especificacao);
+	    return MapeadorDeEspecificacoes.paraEspecificacaoRespostaDTO(especificacao);
 	}
 
 	public EspecificacaoRespostaDTO buscarPorId(Long id) {
-	    return MapeadorDeEspecificacoes.converteParaDTO(auxiliarEspecificacaoService.buscarEspecificacaoPorId(id));
+	    return MapeadorDeEspecificacoes.paraEspecificacaoRespostaDTO(auxiliarEspecificacaoService.buscarEspecificacaoPorId(id));
 	}
 
 	public Page<EspecificacaoRespostaDTO> listarTodos(Pageable paginacao) {
 		return auxiliarEspecificacaoService.listarTodos(paginacao)
-				.map(MapeadorDeEspecificacoes::converteParaDTO);
+				.map(MapeadorDeEspecificacoes::paraEspecificacaoRespostaDTO);
 	}
 	
 	public EspecificacaoRespostaDTO atualizar(Long id, @Valid EspecificacaoRequisicaoDTO dto) {
@@ -42,7 +42,7 @@ public class EspecificacaoService {
 	    especificacao.atualizarDados(dto.descricao(), dto.valor());
         auxiliarEspecificacaoService.salvarEspecificacao(especificacao);
         
-        return MapeadorDeEspecificacoes.converteParaDTO(especificacao);
+        return MapeadorDeEspecificacoes.paraEspecificacaoRespostaDTO(especificacao);
     }
 
 	public void deletar(Long id) {

@@ -2,7 +2,6 @@ package br.com.raroacademy.projetofinal.controller.equipamento;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,14 +32,13 @@ public class EspecificacaoController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<Page<EspecificacaoRespostaDTO>> listarEspecificacoes(
+	public ResponseEntity<Page<EspecificacaoRespostaDTO>> listarTodos(
 	        @RequestParam(defaultValue = "0") int pagina,
-	        @RequestParam(defaultValue = "10") int tamanho
+	        @RequestParam(defaultValue = "10") int tamanho,
+	        Pageable paginacao
 			) 
 	{
-	    Pageable paginacao = PageRequest.of(pagina, tamanho);
-	    Page<EspecificacaoRespostaDTO> paginaResultado = especificacaoService.listarTodos(paginacao);
-	    return ResponseEntity.ok(paginaResultado);
+	    return ResponseEntity.ok(especificacaoService.listarTodos(paginacao));
 	}
 
     @PostMapping
