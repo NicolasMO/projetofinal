@@ -34,4 +34,11 @@ public class TipoEquipamento {
     	this.tempoConfiguracao = tempoConfiguracao;
     	this.estoqueMinimo = estoqueMinimo;
     }
+    
+    public void atualizarDados(String nome, Integer tempoConfiguracao, Integer estoqueMinimo) {
+        this.nome = nome;
+        this.tempoConfiguracao = tempoConfiguracao;
+        this.estoqueMinimo = estoqueMinimo;
+    }
+
 }

@@ -23,7 +23,7 @@ import lombok.Setter;
 @Setter
 @Table(name = "equipamento_pedidos")
 public class EquipamentoPedido {
-
+	
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,4 +48,11 @@ public class EquipamentoPedido {
     @Column(nullable = false)
     private boolean entregue = false;
     
+    public EquipamentoPedido(Pedido pedido, String marca, String modelo, TipoEquipamento tipoEquipamento) {
+		this.pedido = pedido;
+		this.marca = marca;
+		this.modelo = modelo;
+		this.tipoEquipamento = tipoEquipamento;
+	}
+
 }

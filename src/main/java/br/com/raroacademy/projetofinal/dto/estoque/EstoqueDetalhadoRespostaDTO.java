@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import br.com.raroacademy.projetofinal.dto.equipamento.EquipamentoRespostaDTO;
+import br.com.raroacademy.projetofinal.dto.equipamento.equipamento.EquipamentoRespostaDTO;
 
 public record EstoqueDetalhadoRespostaDTO(
 		Long id,

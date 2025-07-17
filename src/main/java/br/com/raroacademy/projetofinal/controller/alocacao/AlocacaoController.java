@@ -34,7 +34,7 @@ public class AlocacaoController {
 
     @PostMapping
     public ResponseEntity<String> cadastrar(@Valid @RequestBody AlocacaoRequisicaoDTO dto) {
-        alocacaoService.cadastraPorColaboradorID(dto);
+        alocacaoService.cadastrar(dto);
         return ResponseEntity.ok("Alocação cadastrada com sucesso");
     }
 

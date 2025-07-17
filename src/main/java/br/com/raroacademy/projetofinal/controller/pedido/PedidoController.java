@@ -62,6 +62,7 @@ public class PedidoController {
     
     /*
      * 	Lista os equipamentos que tem previsão de entrega entre determinado periodo
+     *  contando os que foi entregue ou não, mas mostrando apenas os que não foram 
      */
     @GetMapping("/previsao/pendente")
     public ResponseEntity<PedidoRespostaPaginaDTO> listarPendentesPorDataPrevisaoEntrega(
@@ -95,7 +96,7 @@ public class PedidoController {
     
     /*
      * 	Lista os equipamentos que tem previsão de entrega entre determinado periodo
-     *	e seus equipamentos já chegaram. Por algum motivo só mostra pedidos que estão parcialmente entregues
+     *	e se seus equipamentos já chegaram.
      */
     @GetMapping("/entregues")
     public ResponseEntity<PedidoRespostaPaginaDTO> listarEntregues(

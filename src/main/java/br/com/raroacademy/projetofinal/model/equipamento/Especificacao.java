@@ -29,14 +29,18 @@ public class Especificacao {
 
     private String valor;
     
-    // Verificar depois como remover essa anotation JSON
     @JsonBackReference
     @ManyToMany(mappedBy = "especificacoes")
     private List<Equipamento> equipamentos;
     
-    // Construtor para cadastro    
     public Especificacao(String descricao, String valor) {
         this.descricao = descricao;
         this.valor = valor;
     }
+    
+    public void atualizarDados(String descricao, String valor) {
+    	this.descricao = descricao;
+        this.valor = valor;
+    }
+
 }

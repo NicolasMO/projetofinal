@@ -5,62 +5,56 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.raroacademy.projetofinal.dto.equipamento.AtualizarTipoEquipamentoEstoqueMinimoDTO;
-import br.com.raroacademy.projetofinal.dto.equipamento.TipoEquipamentoRequisicaoDTO;
-import br.com.raroacademy.projetofinal.dto.equipamento.TipoEquipamentoRespostaDTO;
-import br.com.raroacademy.projetofinal.exception.equipamento.TipoEquipamentoDuplicadoException;
-import br.com.raroacademy.projetofinal.exception.equipamento.TipoEquipamentoNaoEncontradoException;
+import br.com.raroacademy.projetofinal.dto.equipamento.tipoEquipamento.AtualizarTipoEquipamentoEstoqueMinimoDTO;
+import br.com.raroacademy.projetofinal.dto.equipamento.tipoEquipamento.TipoEquipamentoRequisicaoDTO;
+import br.com.raroacademy.projetofinal.dto.equipamento.tipoEquipamento.TipoEquipamentoRespostaDTO;
+import br.com.raroacademy.projetofinal.mapper.equipamento.MapeadorDeTiposEquipamentos;
 import br.com.raroacademy.projetofinal.model.equipamento.TipoEquipamento;
-import br.com.raroacademy.projetofinal.repository.equipamento.TipoEquipamentoRepository;
+import br.com.raroacademy.projetofinal.service.equipamento.auxiliar.AuxiliarTipoEquipamentoService;
 
 @Service
 public class TipoEquipamentoService {
-
+    
     @Autowired
-    private TipoEquipamentoRepository tipoEquipamentoRepository;
+	private AuxiliarTipoEquipamentoService auxiliarTipoEquipamentoService;
 
-    public void criar(TipoEquipamentoRequisicaoDTO dto) {
-    	if (tipoEquipamentoRepository.existsByNomeIgnoreCase(dto.nome())) {
-    	    throw new TipoEquipamentoDuplicadoException(dto.nome());
-    	}
+    public TipoEquipamentoRespostaDTO criar(TipoEquipamentoRequisicaoDTO dto) {
+    	auxiliarTipoEquipamentoService.validarNomeDuplicado(dto.nome());
     	
-        TipoEquipamento tipo = new TipoEquipamento(dto.nome(), dto.tempoConfiguracao(), dto.estoqueMinimo());
-        tipoEquipamentoRepository.save(tipo);
+        TipoEquipamento tipoEquipamento = new TipoEquipamento(dto.nome(), dto.tempoConfiguracao(), dto.estoqueMinimo());
+        auxiliarTipoEquipamentoService.salvarTipoEquipamento(tipoEquipamento);
+        
+        return MapeadorDeTiposEquipamentos.converteParaDTO(tipoEquipamento);
     }
 
     public TipoEquipamentoRespostaDTO buscarPorId(Long id) {
-        TipoEquipamento tipo = buscarTipoPorId(id);
-        return new TipoEquipamentoRespostaDTO(tipo.getId(), tipo.getNome(), tipo.getTempoConfiguracao(), tipo.getEstoqueMinimo());
+        return MapeadorDeTiposEquipamentos.converteParaDTO(auxiliarTipoEquipamentoService.buscarTipoPorId(id));
     }
 
-    public Page<TipoEquipamentoRespostaDTO> listarTodos(Pageable pageable) {
-        return tipoEquipamentoRepository.findAll(pageable)
-        		.map(tipo -> new TipoEquipamentoRespostaDTO(tipo.getId(), tipo.getNome(), tipo.getTempoConfiguracao(), tipo.getEstoqueMinimo()));
-    }
-    
-    public void atualizar(Long id, TipoEquipamentoRequisicaoDTO dto) {
-        TipoEquipamento tipo = buscarTipoPorId(id);
-
-        tipo.setNome(dto.nome());
-        tipo.setTempoConfiguracao(dto.tempoConfiguracao());
-        tipo.setEstoqueMinimo(dto.estoqueMinimo());
-
-        tipoEquipamentoRepository.save(tipo);
+    public Page<TipoEquipamentoRespostaDTO> listarTodos(Pageable paginacao) {
+        return auxiliarTipoEquipamentoService.listarTodos(paginacao)
+        		.map(MapeadorDeTiposEquipamentos::converteParaDTO);
     }
     
-    public void atualizarEstoqueMinimo(Long id, AtualizarTipoEquipamentoEstoqueMinimoDTO dto) {
-        TipoEquipamento tipo = buscarTipoPorId(id);
-        tipo.setEstoqueMinimo(dto.estoqueMinimo());
-        tipoEquipamentoRepository.save(tipo);
+    public TipoEquipamentoRespostaDTO atualizar(Long id, TipoEquipamentoRequisicaoDTO dto) {
+        TipoEquipamento tipoEquipamento = auxiliarTipoEquipamentoService.buscarTipoPorId(id);
+        tipoEquipamento.atualizarDados(dto.nome(), dto.tempoConfiguracao(), dto.estoqueMinimo());
+        auxiliarTipoEquipamentoService.salvarTipoEquipamento(tipoEquipamento);
+        
+        return MapeadorDeTiposEquipamentos.converteParaDTO(tipoEquipamento);
+    }
+    
+    public TipoEquipamentoRespostaDTO atualizarEstoqueMinimo(Long id, AtualizarTipoEquipamentoEstoqueMinimoDTO dto) {
+        TipoEquipamento tipoEquipamento = auxiliarTipoEquipamentoService.buscarTipoPorId(id);
+        tipoEquipamento.setEstoqueMinimo(dto.estoqueMinimo());
+        auxiliarTipoEquipamentoService.salvarTipoEquipamento(tipoEquipamento);
+        
+        return MapeadorDeTiposEquipamentos.converteParaDTO(tipoEquipamento);
     }
 
     public void deletar(Long id) {
-        TipoEquipamento tipo = buscarTipoPorId(id);
-        tipoEquipamentoRepository.delete(tipo);
+        TipoEquipamento tipoEquipamento = auxiliarTipoEquipamentoService.buscarTipoPorId(id);
+        auxiliarTipoEquipamentoService.deletarTipoEquipamento(tipoEquipamento);
     }
     
-    private TipoEquipamento buscarTipoPorId(Long id) {
-        return tipoEquipamentoRepository.findById(id)
-            .orElseThrow(() -> new TipoEquipamentoNaoEncontradoException("Tipo de Equipamento com ID " + id + " não encontrado."));
-    }
 }

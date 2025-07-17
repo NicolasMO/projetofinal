@@ -9,8 +9,9 @@ public record AlocacaoRequisicaoDTO(
         @NotNull @NotBlank
         String numeroSerie,
 
-        @NotNull
         Long colaboradorId,
+
+        String colaboradorNome,
 
         LocalDate dataEnvio,
 

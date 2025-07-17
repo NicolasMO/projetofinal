@@ -40,8 +40,11 @@ public class AlocacaoEquipamentoController {
         return ResponseEntity.ok(lista);
     }
     
+    /*
+     * Gera relatório de equipamentos previstos para chegar em periodo informado
+     */
     @GetMapping("/relatorio")
-    public ResponseEntity<AlocacaoEquipamentoRelatorioDTO> gerarRelatorio(
+    public ResponseEntity<AlocacaoEquipamentoRelatorioDTO> gerarRelatorioDeEquipamentosAlocadosComDevolucaoPrevistaPorPeriodo(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim,
             @RequestParam(defaultValue = "0") int pagina,
@@ -49,10 +52,13 @@ public class AlocacaoEquipamentoController {
     		) 
     {
     	Pageable paginacao = PageRequest.of(pagina, tamanho);
-    	AlocacaoEquipamentoRelatorioDTO dto = alocacaoEquipamentoService.gerarRelatorio(inicio, fim, paginacao);
+    	AlocacaoEquipamentoRelatorioDTO dto = alocacaoEquipamentoService.gerarRelatorioDeEquipamentosAlocadosComDevolucaoPrevistaPorPeriodo(inicio, fim, paginacao);
         return ResponseEntity.ok(dto);
     }
     
+    /*
+     * Gera relatório de equipamentos previstos para chegar em periodo informado ou total de alocados do colaborador
+     */
     @GetMapping("/colaborador/{id}")
     public ResponseEntity<AlocacaoEquipamentoRelatorioDTO> listarEquipamentosPorColaborador(
     		@PathVariable Long id,

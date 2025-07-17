@@ -7,18 +7,21 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import br.com.raroacademy.projetofinal.dto.response.ApiErroResposta;
-import br.com.raroacademy.projetofinal.exception.equipamento.EquipamentoNaoEncontradoException;
-import br.com.raroacademy.projetofinal.exception.equipamento.EspecificacaoDuplicadaException;
-import br.com.raroacademy.projetofinal.exception.equipamento.EspecificacaoNaoEncontradaException;
-import br.com.raroacademy.projetofinal.exception.equipamento.NumeroSerieDuplicadoException;
-import br.com.raroacademy.projetofinal.exception.equipamento.TipoEquipamentoDuplicadoException;
-import br.com.raroacademy.projetofinal.exception.equipamento.TipoEquipamentoNaoEncontradoException;
+import br.com.raroacademy.projetofinal.exception.alocacao.equipamento.EquipamentoAlocadoNaoEncontradoException;
+import br.com.raroacademy.projetofinal.exception.enums.StatusEquipamentoInvalidoException;
+import br.com.raroacademy.projetofinal.exception.equipamento.equipamento.EquipamentoNaoEncontradoException;
+import br.com.raroacademy.projetofinal.exception.equipamento.equipamento.NumeroSerieDuplicadoException;
+import br.com.raroacademy.projetofinal.exception.equipamento.especificacao.EspecificacaoDuplicadaException;
+import br.com.raroacademy.projetofinal.exception.equipamento.especificacao.EspecificacaoNaoEncontradaException;
+import br.com.raroacademy.projetofinal.exception.equipamento.tipoEquipamento.TipoEquipamentoDuplicadoException;
+import br.com.raroacademy.projetofinal.exception.equipamento.tipoEquipamento.TipoEquipamentoNaoEncontradoException;
 import br.com.raroacademy.projetofinal.exception.estoque.EstoqueNaoEncontradoException;
 import br.com.raroacademy.projetofinal.exception.pedido.EquipamentoJaEntregueException;
 import br.com.raroacademy.projetofinal.exception.pedido.NenhumPedidoEncontradoException;
@@ -229,7 +232,7 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resposta);
     }
-    
+
     @ExceptionHandler(EquipamentoJaEntregueException.class)
     public ResponseEntity<ApiErroResposta> tratarNenhumPedido(EquipamentoJaEntregueException ex) {
     	ApiErroResposta resposta = new ApiErroResposta(
@@ -240,7 +243,7 @@ public class GlobalExceptionHandler {
     			);
     	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resposta);
     }
-    
+
     // Exceptions de estoque
     @ExceptionHandler(EstoqueNaoEncontradoException.class)
     public ResponseEntity<ApiErroResposta> tratarEstoqueNaoEncontrado(EstoqueNaoEncontradoException ex) {
@@ -251,5 +254,40 @@ public class GlobalExceptionHandler {
             List.of(ex.getMessage())
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resposta);
+    }
+
+    // Exception de Alocação de Equipamentos
+    @ExceptionHandler(EquipamentoAlocadoNaoEncontradoException.class)
+    public ResponseEntity<ApiErroResposta> tratarEquipamentoAlocadoNaoEncontrado(EquipamentoAlocadoNaoEncontradoException ex) {
+        ApiErroResposta resposta = new ApiErroResposta(
+            HttpStatus.NOT_FOUND.value(),
+            "Equipamento alocado não encontrado",
+            ex.getMessage(),
+            List.of(ex.getMessage())
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resposta);
+    }
+
+    // Exceptions de status
+    @ExceptionHandler(StatusEquipamentoInvalidoException.class)
+    public ResponseEntity<ApiErroResposta> tratarStatusEquipamentoInvalido(StatusEquipamentoInvalidoException ex) {
+        ApiErroResposta resposta = new ApiErroResposta(
+            HttpStatus.BAD_REQUEST.value(),
+            "Status do equipamento inválido",
+            ex.getMessage(),
+            List.of(ex.getMessage())
+        );
+        return ResponseEntity.badRequest().body(resposta);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiErroResposta> tratarJsonInvalido(HttpMessageNotReadableException ex) {
+        ApiErroResposta resposta = new ApiErroResposta(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "Erro interno",
+                "Erro ao processar o corpo da requisição (JSON inválido).",
+                List.of("Verifique se o JSON está bem formado. Ex: valores não podem estar vazios.")
+        );
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resposta);
     }
 }

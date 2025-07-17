@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.raroacademy.projetofinal.dto.equipamento.AtualizarTipoEquipamentoEstoqueMinimoDTO;
-import br.com.raroacademy.projetofinal.dto.equipamento.TipoEquipamentoRequisicaoDTO;
-import br.com.raroacademy.projetofinal.dto.equipamento.TipoEquipamentoRespostaDTO;
+import br.com.raroacademy.projetofinal.dto.equipamento.tipoEquipamento.AtualizarTipoEquipamentoEstoqueMinimoDTO;
+import br.com.raroacademy.projetofinal.dto.equipamento.tipoEquipamento.TipoEquipamentoRequisicaoDTO;
+import br.com.raroacademy.projetofinal.dto.equipamento.tipoEquipamento.TipoEquipamentoRespostaDTO;
 import br.com.raroacademy.projetofinal.service.equipamento.TipoEquipamentoService;
 import jakarta.validation.Valid;
 
@@ -46,21 +46,18 @@ public class TipoEquipamentoController {
     }
 
     @PostMapping
-    public ResponseEntity<String> cadastrar(@Valid @RequestBody TipoEquipamentoRequisicaoDTO dto) {
-        tipoEquipamentoService.criar(dto);
-        return ResponseEntity.ok("Tipo de Equipamento cadastrado com sucesso!");
+    public ResponseEntity<TipoEquipamentoRespostaDTO> cadastrar(@Valid @RequestBody TipoEquipamentoRequisicaoDTO dto) {
+        return ResponseEntity.ok(tipoEquipamentoService.criar(dto));
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<String> atualizar(@PathVariable Long id, @Valid @RequestBody TipoEquipamentoRequisicaoDTO dto) {
-        tipoEquipamentoService.atualizar(id, dto);
-        return ResponseEntity.ok("Tipo de Equipamento atualizado com sucesso!");
+    public ResponseEntity<TipoEquipamentoRespostaDTO> atualizar(@PathVariable Long id, @Valid @RequestBody TipoEquipamentoRequisicaoDTO dto) {
+        return ResponseEntity.ok(tipoEquipamentoService.atualizar(id, dto));
     }
     
     @PatchMapping("/{id}/estoque-minimo")
-    public ResponseEntity<String> atualizarEstoqueMinimo(@PathVariable Long id, @RequestBody @Valid AtualizarTipoEquipamentoEstoqueMinimoDTO dto) {
-        tipoEquipamentoService.atualizarEstoqueMinimo(id, dto);
-        return ResponseEntity.ok("Estoque mínimo atualizado com sucesso!");
+    public ResponseEntity<TipoEquipamentoRespostaDTO> atualizarEstoqueMinimo(@PathVariable Long id, @Valid @RequestBody AtualizarTipoEquipamentoEstoqueMinimoDTO dto) {
+        return ResponseEntity.ok(tipoEquipamentoService.atualizarEstoqueMinimo(id, dto));
     }
 
     @DeleteMapping("/{id}")

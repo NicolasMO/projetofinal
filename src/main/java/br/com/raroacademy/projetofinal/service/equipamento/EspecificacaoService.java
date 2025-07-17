@@ -5,61 +5,49 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import br.com.raroacademy.projetofinal.dto.equipamento.EspecificacaoRequisicaoDTO;
-import br.com.raroacademy.projetofinal.dto.equipamento.EspecificacaoRespostaDTO;
-import br.com.raroacademy.projetofinal.exception.equipamento.EspecificacaoDuplicadaException;
-import br.com.raroacademy.projetofinal.exception.equipamento.EspecificacaoNaoEncontradaException;
+import br.com.raroacademy.projetofinal.dto.equipamento.especificacao.EspecificacaoRequisicaoDTO;
+import br.com.raroacademy.projetofinal.dto.equipamento.especificacao.EspecificacaoRespostaDTO;
+import br.com.raroacademy.projetofinal.mapper.equipamento.MapeadorDeEspecificacoes;
 import br.com.raroacademy.projetofinal.model.equipamento.Especificacao;
-import br.com.raroacademy.projetofinal.repository.equipamento.EspecificacaoRepository;
+import br.com.raroacademy.projetofinal.service.equipamento.auxiliar.AuxiliarEspecificacaoService;
 import jakarta.validation.Valid;
 
 @Service
 public class EspecificacaoService {
 
 	@Autowired
-	private EspecificacaoRepository especificacaoRepository;
+	private AuxiliarEspecificacaoService auxiliarEspecificacaoService;
 	
-	public void criar(EspecificacaoRequisicaoDTO dto) {
-		boolean existe = especificacaoRepository.existsByDescricaoAndValor(dto.descricao(), dto.valor());
-
-	    if (existe) {
-	        throw new EspecificacaoDuplicadaException("Especificação já cadastrada.");
-	    }
-
-	    Especificacao espec = new Especificacao(dto.descricao(), dto.valor());
-	    especificacaoRepository.save(espec);
+	
+	public EspecificacaoRespostaDTO criar(EspecificacaoRequisicaoDTO dto) {
+		auxiliarEspecificacaoService.validarEspecificacaoPorDescricaoEValor(dto);
+		
+	    Especificacao especificacao = new Especificacao(dto.descricao(), dto.valor());
+	    auxiliarEspecificacaoService.salvarEspecificacao(especificacao);
+	    
+	    return MapeadorDeEspecificacoes.converteParaDTO(especificacao);
 	}
 
 	public EspecificacaoRespostaDTO buscarPorId(Long id) {
-	    Especificacao espec = buscarEspecificacaoPorId(id);
-	    return new EspecificacaoRespostaDTO(espec.getId(), espec.getDescricao(), espec.getValor());
+	    return MapeadorDeEspecificacoes.converteParaDTO(auxiliarEspecificacaoService.buscarEspecificacaoPorId(id));
 	}
 
 	public Page<EspecificacaoRespostaDTO> listarTodos(Pageable paginacao) {
-		return especificacaoRepository.findAll(paginacao)
-	            .map(espec -> new EspecificacaoRespostaDTO(espec.getId(), espec.getDescricao(), espec.getValor()));
+		return auxiliarEspecificacaoService.listarTodos(paginacao)
+				.map(MapeadorDeEspecificacoes::converteParaDTO);
 	}
 	
-	public void atualizar(Long id, @Valid EspecificacaoRequisicaoDTO dto) {
-	    Especificacao espec = buscarEspecificacaoPorId(id);
-
-        espec.setDescricao(dto.descricao());
-        espec.setValor(dto.valor());
-
-        especificacaoRepository.save(espec);
+	public EspecificacaoRespostaDTO atualizar(Long id, @Valid EspecificacaoRequisicaoDTO dto) {
+	    Especificacao especificacao = auxiliarEspecificacaoService.buscarEspecificacaoPorId(id);
+	    especificacao.atualizarDados(dto.descricao(), dto.valor());
+        auxiliarEspecificacaoService.salvarEspecificacao(especificacao);
+        
+        return MapeadorDeEspecificacoes.converteParaDTO(especificacao);
     }
 
 	public void deletar(Long id) {
-	    if (!especificacaoRepository.existsById(id)) {
-	    	throw new EspecificacaoNaoEncontradaException("Especificação com ID " + id + " não encontrada.");
-	    }
-	    especificacaoRepository.deleteById(id);
+	    Especificacao especificacao = auxiliarEspecificacaoService.buscarEspecificacaoPorId(id);
+	    auxiliarEspecificacaoService.deletarEspecificaocao(especificacao);
 	}
 	
-	private Especificacao buscarEspecificacaoPorId(Long id) {
-		Especificacao espec = especificacaoRepository.findById(id)
-	        .orElseThrow(() -> new EspecificacaoNaoEncontradaException("Especificação com ID " + id + " não encontrada."));
-		return espec;
-	}
-
 }

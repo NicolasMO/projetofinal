@@ -1,6 +1,6 @@
 package br.com.raroacademy.projetofinal.controller.equipamento;
 
-import br.com.raroacademy.projetofinal.enums.STATUS_EQUIPAMENTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.raroacademy.projetofinal.dto.equipamento.EquipamentoAtualizarDTO;
-import br.com.raroacademy.projetofinal.dto.equipamento.EquipamentoRequisicaoDTO;
-import br.com.raroacademy.projetofinal.dto.equipamento.EquipamentoRespostaDTO;
+import br.com.raroacademy.projetofinal.dto.equipamento.equipamento.EquipamentoAtualizarDTO;
+import br.com.raroacademy.projetofinal.dto.equipamento.equipamento.EquipamentoRequisicaoDTO;
+import br.com.raroacademy.projetofinal.dto.equipamento.equipamento.EquipamentoRespostaDTO;
 import br.com.raroacademy.projetofinal.service.equipamento.EquipamentoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/equipamentos")
 @RequiredArgsConstructor
 public class EquipamentoController {
-
+	
+	@Autowired
     private final EquipamentoService equipamentoService;
 
     @GetMapping("/{numeroSerie}")
@@ -46,20 +47,19 @@ public class EquipamentoController {
     }
     
     @PostMapping
-    public ResponseEntity<String> cadastrar(@Valid @RequestBody EquipamentoRequisicaoDTO dto) {
-        equipamentoService.criar(dto);
-        return ResponseEntity.ok("Equipamento cadastrado com sucesso!");
+    public ResponseEntity<EquipamentoRespostaDTO> cadastrar(@Valid @RequestBody EquipamentoRequisicaoDTO dto) {
+        return ResponseEntity.ok(equipamentoService.criar(dto));
     }
     
     @PutMapping("/{numeroSerie}")
-    public ResponseEntity<String> atualizar(@PathVariable String numeroSerie, @Valid @RequestBody EquipamentoAtualizarDTO dto) {
-        equipamentoService.atualizar(numeroSerie, dto, STATUS_EQUIPAMENTO.DISPONIVEL);
-        return ResponseEntity.ok("Equipamento alterado com sucesso!");
+    public ResponseEntity<EquipamentoRespostaDTO> atualizar(@PathVariable String numeroSerie, @Valid @RequestBody EquipamentoAtualizarDTO dto) {
+        return ResponseEntity.ok(equipamentoService.atualizarEquipamento(numeroSerie, dto));
     }
     
     @DeleteMapping("/{numeroSerie}")
     public ResponseEntity<String> deletar(@PathVariable String numeroSerie) {
-        equipamentoService.deletar(numeroSerie);
+        equipamentoService.deletarEquipamento(numeroSerie);
         return ResponseEntity.ok("Equipamento excluído com sucesso!");
     }
+    
 }

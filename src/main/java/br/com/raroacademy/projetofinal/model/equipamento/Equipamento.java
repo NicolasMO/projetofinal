@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import br.com.raroacademy.projetofinal.dto.equipamento.equipamento.EquipamentoAtualizarDTO;
 import br.com.raroacademy.projetofinal.enums.STATUS_EQUIPAMENTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,9 +25,9 @@ import lombok.Setter;
 @Entity
 @Table(name = "equipamentos")
 @Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 public class Equipamento {
 	
 	 @Id
@@ -52,7 +53,6 @@ public class Equipamento {
 	 @JoinColumn(name = "tipo_equipamento_id")
 	 private TipoEquipamento tipoEquipamento;
 	 
-	 // Verificar depois como remover essa annotation JSON
 	 @JsonManagedReference
 	 @ManyToMany
 	 @JoinTable(
@@ -61,4 +61,12 @@ public class Equipamento {
 	     inverseJoinColumns = @JoinColumn(name = "especificacao_id")
 	 )
 	 private Set<Especificacao> especificacoes;
+	 
+	 public void atualizarComDTO(EquipamentoAtualizarDTO dto, TipoEquipamento tipo, Set<Especificacao> especificacoes) {
+		    this.modelo = dto.modelo();
+		    this.marca = dto.marca();
+		    this.tipoEquipamento = tipo;
+		    this.especificacoes = especificacoes;
+		    this.status = dto.statusEquipamento();
+	}
 }

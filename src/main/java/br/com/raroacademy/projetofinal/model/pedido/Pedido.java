@@ -44,4 +44,10 @@ public class Pedido {
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<EquipamentoPedido> equipamentos = new HashSet<>();
 
+	public Pedido(LocalDate dataSolicitacao, LocalDate dataPrevisaoEntrega, STATUS_PEDIDO status) {
+		this.dataSolicitacao = dataSolicitacao;
+		this.dataPrevisaoEntrega = dataPrevisaoEntrega;
+		this.status = status;
+	}
+
 }
